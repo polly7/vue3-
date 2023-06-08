@@ -1,105 +1,116 @@
 <template>
   <div class="homeView">
     <el-container>
-      <el-container>
-        <el-aside :style="{ width: !data.zoomClose ? '200px' : '63px' }">
-          <div class="LogoPart">
-            <div class="logo" v-if="!data.zoomClose">你的logo</div>
-            <div class="zoom" @click="zoomClick">
-              <el-icon>
-                <Fold v-if="data.zoomClose" />
-                <Expand v-else />
-              </el-icon>
-            </div>
-          </div>
-          <el-scrollbar style="height: calc(100vh - 53px)">
-            <SideBar :zoomClose="data.zoomClose" />
-          </el-scrollbar>
-        </el-aside>
-        <el-container>
-          <el-header style="text-align: right; font-size: 15px">
-            <div class="toolbar">
-              <el-dropdown>
-                <el-icon
-                  style="margin-right: 8px; margin-top: 1px; font-size: 18px"
-                  ><setting
-                /></el-icon>
-                <template #dropdown>
-                  <el-dropdown-menu>
-                    <el-dropdown-item>View</el-dropdown-item>
-                    <el-dropdown-item>Add</el-dropdown-item>
-                    <el-dropdown-item>Delete</el-dropdown-item>
-                  </el-dropdown-menu>
-                </template>
-              </el-dropdown>
-              <span>Tom</span>
-            </div>
-          </el-header>
-          <el-main>
-            <el-scrollbar>
-              <router-view />
-            </el-scrollbar>
-          </el-main>
-        </el-container>
-      </el-container>
+      <el-header>
+        <img :src="data.logo" class="sidebar-logo" />
+        <div class="menu">
+          <el-menu
+            :default-active="data.activeIndex"
+            class="el-menu-demo"
+            mode="horizontal"
+            @select="handleSelect"
+          >
+            <el-menu-item
+              v-for="item in data.navList"
+              :key="item.id"
+              :index="item.id"
+              >{{ item.name }}</el-menu-item
+            >
+          </el-menu>
+          <div class="userImg">{{ "秀媛" }}</div>
+        </div>
+      </el-header>
+      <el-main>
+        <router-view />
+        <!-- <Main> </Main> -->
+      </el-main>
     </el-container>
   </div>
 </template>
 <script setup>
   import { ref, reactive, onMounted, nextTick } from "vue";
-  import SideBar from "@/views/layout/sideBar.vue";
+  import { useRoute, useRouter } from "vue-router";
   import { useStore } from "vuex"; // 通过vuex获取数据
+  import logoImg from "../../assets/img/logo.png";
+  // import Main from "@/views/layout/main.vue";
   const store = useStore();
+  const router = useRouter();
   // 所有变量
   const data = reactive({
-    zoomClose: false,
-    goods: store.state.module1.goods, //获取vuex数据
+    logo: logoImg,
+    activeIndex: 1,
+    navList: [
+      {
+        id: 1,
+        name: "导航1",
+      },
+      {
+        id: 2,
+        name: "导航2",
+      },
+      {
+        id: 3,
+        name: "导航3",
+      },
+      {
+        id: 4,
+        name: "导航4",
+      },
+    ],
   });
-  // 导航折叠
-  const zoomClick = () => {
-    data.zoomClose = !data.zoomClose;
+  const handleSelect = (key, keyPath) => {
+    if (key === 1) {
+      router.push({ name: "nav1" });
+    }
   };
 </script>
 <style lang="scss" scoped>
   .homeView {
-    height: 100%;
-    .LogoPart {
+    .el-header {
+      width: 100%;
+      height: 80px;
       display: flex;
-      padding-top: 20px;
-      padding-left: 20px;
-      .logo {
-        width: 110px;
-        height: 25px;
-        font-size: 20px;
-        line-height: 25px;
-        background: #ecf5ff;
-        margin-right: 20px;
-      }
-      .zoom {
-        font-size: 25px;
+      flex-direction: row;
+      justify-content: space-between;
+      align-content: center;
+      overflow: hidden;
+      padding: 10px 20px 10px 20px;
+      background: #fff;
+      box-shadow: 0 4px 6px 0 rgb(8 14 26 / 4%), 0 1px 10px 0 rgb(8 14 26 / 5%),
+        0 2px 4px -1px rgb(8 14 26 / 6%);
+      .menu {
+        width: 100%;
+        display: flex;
+        justify-content: center;
 
-        &:hover {
-          cursor: pointer;
+        .userImg {
+          width: 50px;
+          height: 50px;
+
+          background: #4c70b9;
+          border-radius: 25px;
+          font-size: 20px;
+          border: 25%;
+          line-height: 50px;
+          color: #fff;
         }
       }
-    }
-    .el-header {
-      background: #c6e2ff;
-      .toolbar {
-        position: relative;
-        top: 40%;
+
+      ::v-deep .el-menu--horizontal {
+        width: 100%;
+        border-bottom: 0px;
+        padding: 0 50px;
+      }
+      ::v-deep .el-menu--horizontal > .el-menu-item {
+        font-size: 16px;
       }
     }
-    .el-aside {
-      height: 100vh !important;
 
-      background: #d9ecff;
-      transition: width 0.35s;
-      overflow: hidden;
-    }
     .el-main {
-      height: calc(100vh - 60px);
-      background: #ecf5ff;
+      height: calc(100vh - 80px);
+      background: #eff2f5;
+
+      width: 100%;
     }
   }
 </style>
