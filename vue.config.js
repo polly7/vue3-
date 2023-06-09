@@ -5,7 +5,8 @@ module.exports = defineConfig({
   pages: {
     index: {
       entry: 'src/main.js', // 入口文件
-      title: '你的标题'
+      title: '考勤统计'
     }
-  }
+  },
+
 })
